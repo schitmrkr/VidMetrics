@@ -30,7 +30,7 @@ export interface FilterState {
 
 export const DEFAULT_FILTERS: FilterState = {
   sortBy: "date_desc",
-  dateRange: "all",
+  dateRange: "1y",
   searchQuery: "",
 };
 
@@ -51,5 +51,4 @@ export const DATE_RANGE_OPTIONS: { value: DateRange; label: string }[] = [
   { value: "90d", label: "Last 90 Days" },
   { value: "1y", label: "Last Year" },
   { value: "all", label: "All Time" },
-  { value: "custom", label: "Custom Range" },
 ];

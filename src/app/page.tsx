@@ -63,20 +63,6 @@ export default function LandingPage() {
               variant="hero"
             />
 
-            <div className="mt-6 flex justify-center gap-10 text-on-surface-variant text-sm font-label font-medium flex-wrap">
-              <span className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-sm text-secondary">
-                  verified
-                </span>{" "}
-                No login required
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-sm text-secondary">
-                  analytics
-                </span>{" "}
-                10,000+ channels indexed
-              </span>
-            </div>
           </div>
 
           {/* Recent Analyses Section */}

@@ -36,7 +36,7 @@ export default function HistoryPage() {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest">
               <ShieldCheck className="h-3 w-3" /> Kinetic Vault
             </div>
-            <h1 className="font-headline text-4xl lg:text-6xl font-black tracking-tighter text-on-surface">
+            <h1 className="font-headline text-3xl lg:text-5xl font-black tracking-tighter text-on-surface">
                History & <span className="text-primary/80">Saved</span>
             </h1>
             <p className="max-w-xl text-base font-medium text-on-surface-variant leading-relaxed">

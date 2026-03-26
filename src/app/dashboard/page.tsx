@@ -74,7 +74,7 @@ function DashboardContent() {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest">
               <Database className="h-3 w-3" /> Core Metrics Engine
             </div>
-            <h1 className="font-headline text-4xl lg:text-6xl font-black tracking-tighter text-on-surface">
+            <h1 className="font-headline text-3xl lg:text-5xl font-black tracking-tighter text-on-surface">
               Video <span className="text-primary/80">Dashboard</span>
             </h1>
             <p className="max-w-xl text-base font-medium text-on-surface-variant leading-relaxed">
@@ -134,8 +134,8 @@ function DashboardContent() {
               <div className="mx-auto h-24 w-24 rounded-2xl bg-surface-container-high flex items-center justify-center shadow-2xl ring-1 ring-white/10 mb-8 animate-pulse">
                 <BarChart3 className="h-10 w-10 text-primary/40" />
               </div>
-              <h2 className="font-headline text-3xl font-bold text-on-surface tracking-tight">
-                No active signal detected
+              <h2 className="font-headline text-2xl font-bold text-on-surface tracking-tight">
+                No channel found
               </h2>
               <p className="max-w-md mx-auto text-on-surface-variant font-medium leading-relaxed">
                 Enter a YouTube channel URL in the field above to initialize data collection and start your kinetic performance analysis.

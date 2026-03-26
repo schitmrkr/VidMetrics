@@ -73,7 +73,7 @@ export function FilterBar({
       <div className="space-y-6">
         <div className="space-y-2">
           <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest pl-1">
-            Search Signal
+            Search Video
           </label>
           <div className="relative group">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-on-surface-variant group-focus-within:text-primary transition-colors" />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   validateChannelInput,
@@ -16,19 +16,17 @@ export function useChannelAnalysis(initialUrl?: string | null) {
   const [validationError, setValidationError] = useState<string | null>(null);
   
   const { currentChannelUrl, setCurrentChannelUrl } = useCurrentChannelStore();
-
-  const effectiveUrl = initialUrl || currentChannelUrl;
+  const isInitialized = useRef(false);
 
   const {
     data: channel,
     isLoading,
     error,
     refetch,
-    isFetched,
   } = useQuery<Channel>({
-    queryKey: ["channel", effectiveUrl],
-    queryFn: () => fetchChannel(effectiveUrl!),
-    enabled: !!effectiveUrl,
+    queryKey: ["channel", submittedUrl],
+    queryFn: () => fetchChannel(submittedUrl!),
+    enabled: !!submittedUrl,
     staleTime: 10 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
   });
@@ -46,16 +44,24 @@ export function useChannelAnalysis(initialUrl?: string | null) {
   }, [channel]);
 
   useEffect(() => {
-    if (initialUrl) {
-      setChannelUrl(initialUrl);
-      setSubmittedUrl(initialUrl);
-    } else if (currentChannelUrl && !channelUrl) {
-      setChannelUrl(currentChannelUrl);
-      setSubmittedUrl(currentChannelUrl);
+    if (!isInitialized.current) {
+      isInitialized.current = true;
+      if (initialUrl) {
+        setChannelUrl(initialUrl);
+        setSubmittedUrl(initialUrl);
+      } else if (currentChannelUrl) {
+        setChannelUrl(currentChannelUrl);
+        setSubmittedUrl(currentChannelUrl);
+      }
     }
-  }, [initialUrl, currentChannelUrl, channelUrl]);
+  }, [initialUrl, currentChannelUrl]);
 
   const handleSubmit = useCallback(() => {
+    if (!channelUrl.trim()) {
+      setValidationError("Please enter a channel URL or handle");
+      return;
+    }
+
     const validation = validateChannelInput(channelUrl);
 
     if (!validation.valid) {
@@ -79,7 +85,6 @@ export function useChannelAnalysis(initialUrl?: string | null) {
     setChannelUrl,
     channel,
     isLoading,
-    isFetched,
     error: error as Error | null,
     validationError,
     handleSubmit,

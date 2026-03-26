@@ -22,9 +22,7 @@ export default function LandingPage() {
 
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
       <section className="relative pt-24 pb-20 overflow-hidden">
-        {/* Background Atmospheric Depth Elements */}
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] opacity-20 pointer-events-none"
           style={{
@@ -52,7 +50,6 @@ export default function LandingPage() {
             below to unlock performance metrics and content gaps.
           </p>
 
-          {/* Input Field CTA - Hero Focus */}
           <div className="max-w-4xl mx-auto mb-16">
             <ChannelInput
               value={channelUrl}
@@ -62,24 +59,20 @@ export default function LandingPage() {
               error={validationError}
               variant="hero"
             />
-
           </div>
 
-          {/* Recent Analyses Section */}
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-sm font-label uppercase tracking-[0.2em] text-on-surface-variant/60 mb-8">
-              Recently Analyzed Channels
-            </h2>
-            <div className="flex flex-wrap justify-center gap-6 md:gap-10">
-              {recentChannels.length > 0 ? (
-                recentChannels.slice(0, 5).map((ch) => (
+          {recentChannels.length > 0 && (
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-sm font-label uppercase tracking-[0.2em] text-on-surface-variant/60 mb-8">
+                Recently Analyzed Channels
+              </h2>
+              <div className="flex flex-wrap justify-center gap-6 md:gap-10">
+                {recentChannels.slice(0, 5).map((ch) => (
                   <div
                     key={ch.id}
                     onClick={() => {
-                      setChannelUrl(ch.title);
-                      router.push(
-                        `/dashboard?channel=${encodeURIComponent(ch.id)}`
-                      );
+                      setChannelUrl(ch.id);
+                      router.push(`/dashboard?channel=${encodeURIComponent(ch.id)}`);
                     }}
                     className="flex flex-col items-center gap-3 group cursor-pointer"
                   >
@@ -101,60 +94,15 @@ export default function LandingPage() {
                       {ch.title.substring(0, 10)}
                     </span>
                   </div>
-                ))
-              ) : (
-                <>
-                  <div className="flex flex-col items-center gap-3 group cursor-pointer">
-                    <div className="w-16 h-16 rounded-full ring-2 ring-outline-variant/30 ring-offset-4 ring-offset-background overflow-hidden transition-all group-hover:ring-primary group-hover:scale-110 bg-surface-container flex items-center justify-center">
-                      <span className="material-symbols-outlined text-on-surface-variant text-2xl">person</span>
-                    </div>
-                    <span className="text-xs font-bold text-on-surface-variant group-hover:text-on-surface transition-colors">
-                      MrBeast
-                    </span>
-                  </div>
-                  <div className="flex flex-col items-center gap-3 group cursor-pointer">
-                    <div className="w-16 h-16 rounded-full ring-2 ring-outline-variant/30 ring-offset-4 ring-offset-background overflow-hidden transition-all group-hover:ring-primary group-hover:scale-110 bg-surface-container flex items-center justify-center">
-                      <span className="material-symbols-outlined text-on-surface-variant text-2xl">person</span>
-                    </div>
-                    <span className="text-xs font-bold text-on-surface-variant group-hover:text-on-surface transition-colors">
-                      MKBHD
-                    </span>
-                  </div>
-                  <div className="flex flex-col items-center gap-3 group cursor-pointer">
-                    <div className="w-16 h-16 rounded-full ring-2 ring-outline-variant/30 ring-offset-4 ring-offset-background overflow-hidden transition-all group-hover:ring-primary group-hover:scale-110 bg-surface-container flex items-center justify-center">
-                      <span className="material-symbols-outlined text-on-surface-variant text-2xl">person</span>
-                    </div>
-                    <span className="text-xs font-bold text-on-surface-variant group-hover:text-on-surface transition-colors">
-                      Ali Abdaal
-                    </span>
-                  </div>
-                  <div className="flex flex-col items-center gap-3 group cursor-pointer">
-                    <div className="w-16 h-16 rounded-full ring-2 ring-outline-variant/30 ring-offset-4 ring-offset-background overflow-hidden transition-all group-hover:ring-primary group-hover:scale-110 bg-surface-container flex items-center justify-center">
-                      <span className="material-symbols-outlined text-on-surface-variant text-2xl">person</span>
-                    </div>
-                    <span className="text-xs font-bold text-on-surface-variant group-hover:text-on-surface transition-colors">
-                      Veritasium
-                    </span>
-                  </div>
-                  <div className="flex flex-col items-center gap-3 group cursor-pointer">
-                    <div className="w-16 h-16 rounded-full ring-2 ring-outline-variant/30 ring-offset-4 ring-offset-background overflow-hidden transition-all group-hover:ring-primary group-hover:scale-110 bg-surface-container flex items-center justify-center">
-                      <span className="material-symbols-outlined text-on-surface-variant text-2xl">person</span>
-                    </div>
-                    <span className="text-xs font-bold text-on-surface-variant group-hover:text-on-surface transition-colors">
-                      McKinnon
-                    </span>
-                  </div>
-                </>
-              )}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
-      {/* Features Grid */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-          {/* Large Feature */}
           <div className="md:col-span-8 bg-surface-container-high rounded-2xl p-6 md:p-10 flex flex-col justify-between min-h-[380px] overflow-hidden group border border-outline-variant/10">
             <div>
               <span className="text-xs font-label uppercase tracking-widest text-secondary mb-4 block">
@@ -174,7 +122,6 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Small Feature 1 */}
           <div className="md:col-span-4 bg-surface-container-low rounded-2xl p-8 border border-outline-variant/10 hover:bg-surface-container-high transition-colors flex flex-col items-start">
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
               <span className="material-symbols-outlined text-primary text-2xl">
@@ -190,7 +137,6 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* Small Feature 2 */}
           <div className="md:col-span-4 bg-surface-container-low rounded-2xl p-8 border border-outline-variant/10 hover:bg-surface-container-high transition-colors flex flex-col items-start">
             <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center mb-6">
               <span className="material-symbols-outlined text-secondary text-2xl">
@@ -206,9 +152,11 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* Medium Feature */}
           <div className="md:col-span-8 bg-surface-container-high rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8 border border-outline-variant/10">
             <div className="flex-grow">
+              <span className="text-xs font-label uppercase tracking-widest text-secondary mb-4 block">
+                Built for Speed
+              </span>
               <h3 className="text-2xl font-headline font-bold text-on-surface mb-3">
                 Creator-First Workflow
               </h3>

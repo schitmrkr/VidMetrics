@@ -85,6 +85,30 @@ npm start
 
 ---
 
+## Running with Docker
+
+You can also run the application using Docker for an environment consistent with production (e.g., ECS).
+
+### 1. Build the Docker Image
+
+Pass your YouTube API key as a build argument:
+
+```bash
+docker build --build-arg YOUTUBE_API_KEY=your_api_key_here -t vidmetrics .
+```
+
+### 2. Run the Container
+
+Run the container and map port 3000:
+
+```bash
+docker run -p 3000:3000 -e YOUTUBE_API_KEY=your_api_key_here vidmetrics
+```
+
+The application will be available at [http://localhost:3000](http://localhost:3000).
+
+---
+
 ## Available Scripts
 
 | Command         | Description              |

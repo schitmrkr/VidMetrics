@@ -43,4 +43,5 @@ next-env.d.ts
 # local files
 VidMetricsSubmissionBreakdown.pdf
 LoomPoints.md
+.github/*
 

@@ -53,7 +53,7 @@ export default function HistoryPage() {
                 <Bookmark className="h-4 w-4 text-primary" />
               </div>
               <h2 className="text-sm font-black uppercase tracking-[0.2em] text-on-surface-variant/50">
-                Pinned Signals
+                Pinned Channels
               </h2>
               <span className="text-[10px] font-bold text-on-surface-variant/20 ml-auto border border-outline-variant/10 px-2 py-0.5 rounded-full">
                 {savedChannels.length} Linked
@@ -65,7 +65,7 @@ export default function HistoryPage() {
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(66,133,244,0.03),transparent)]" />
                 <Star className="h-10 w-10 text-on-surface-variant/20 group-hover:scale-110 transition-transform" />
                 <p className="text-sm font-medium text-on-surface-variant/40 max-w-[200px] mx-auto leading-relaxed">
-                  No high-priority nodes identified. Star from trace history to pin.
+                  No high-priority channels identified. Star from trace history to pin.
                 </p>
               </div>
             ) : (
@@ -89,7 +89,7 @@ export default function HistoryPage() {
                         {channel.title}
                       </p>
                       <p className="text-[10px] font-bold text-primary uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">
-                        Pinned Signal
+                        Pinned Channel
                       </p>
                     </div>
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">

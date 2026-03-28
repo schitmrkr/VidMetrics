@@ -152,7 +152,7 @@ export default function LandingPage() {
               Easy Export
             </h3>
             <p className="text-on-surface-variant font-body leading-relaxed flex-grow">
-              One-click CSV and PDF reporting for your production team or brand
+              One-click PDF reporting for your production team or brand
               sponsors. Professional insights, ready to share.
             </p>
           </div>

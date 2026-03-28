@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchChannel, fetchVideos, fetchVideoStats } from "@/models/services/youtube";
+import { fetchChannel, fetchVideos, fetchVideoStats, validateChannelInput } from "@/models/services/youtube";
 import { useCurrentChannelStore } from "@/store/useCurrentChannelStore";
 import { useCompareChannelsStore } from "@/store/useCompareChannelsStore";
 import type { Channel } from "@/models/types/channel";
@@ -12,6 +12,7 @@ const MAX_CHANNELS = 5;
 
 export function useCompare() {
   const [localUrls, setLocalUrls] = useState<string[]>([]);
+  const [validationErrors, setValidationErrors] = useState<(string | null)[]>([]);
   const [firstChannelSet, setFirstChannelSet] = useState(false);
   const { currentChannelUrl } = useCurrentChannelStore();
   const { channelUrls: storedUrls, setChannelUrls, isInitialized, setInitialized } = useCompareChannelsStore();
@@ -23,12 +24,15 @@ export function useCompare() {
     if (isInitialMount.current) {
       if (isInitialized && storedUrls.length > 0) {
         setLocalUrls(storedUrls);
+        setValidationErrors(storedUrls.map(() => null));
       } else if (currentChannelUrl) {
         setLocalUrls([currentChannelUrl]);
         setChannelUrls([currentChannelUrl]);
+        setValidationErrors([null]);
         setInitialized(true);
       } else {
         setLocalUrls([""]);
+        setValidationErrors([null]);
       }
       isInitialMount.current = false;
     }
@@ -41,6 +45,10 @@ export function useCompare() {
       setChannelUrls(next);
       return next;
     });
+    setValidationErrors((prev) => {
+      if (prev.length >= MAX_CHANNELS) return prev;
+      return [...prev, null];
+    });
   }, [setChannelUrls]);
 
   const removeChannel = useCallback((index: number) => {
@@ -49,6 +57,9 @@ export function useCompare() {
       const next = prev.filter((_, i) => i !== index);
       setChannelUrls(next);
       return next;
+    });
+    setValidationErrors((prev) => {
+      return prev.filter((_, i) => i !== index);
     });
     if (index === 0) {
       setFirstChannelSet(false);
@@ -65,9 +76,23 @@ export function useCompare() {
       setChannelUrls(next);
       return next;
     });
+
+    setValidationErrors((prev) => {
+      const next = [...prev];
+      if (url.trim()) {
+        const validation = validateChannelInput(url);
+        next[index] = validation.valid ? null : validation.error || "Invalid format";
+      } else {
+        next[index] = null;
+      }
+      return next;
+    });
   }, [setChannelUrls]);
 
-  const validUrls = localUrls.filter((url) => url.trim().length > 0);
+  const validUrls = localUrls
+    .map((url, index) => ({ url, error: validationErrors[index] }))
+    .filter((item) => item.url.trim().length > 0 && !item.error)
+    .map((item) => item.url);
 
   useEffect(() => {
     const newUrls = validUrls.filter((url) => !prevValidUrlsRef.current.includes(url));
@@ -167,6 +192,7 @@ export function useCompare() {
     videosByChannel,
     isLoading,
     errors,
+    validationErrors,
     addChannel,
     removeChannel,
     updateChannel,

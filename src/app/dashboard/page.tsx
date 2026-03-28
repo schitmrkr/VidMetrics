@@ -121,6 +121,15 @@ function DashboardContent() {
           </div>
         </header>
 
+        {channelLoading && (
+          <div className="flex items-center justify-center py-12">
+            <div className="flex items-center gap-3 px-6 py-3 bg-surface-container-high rounded-full border border-white/10 shadow-lg">
+              <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              <span className="text-sm font-medium text-on-surface">Analyzing channel...</span>
+            </div>
+          </div>
+        )}
+
         {channel ? (
           <main className="space-y-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
 

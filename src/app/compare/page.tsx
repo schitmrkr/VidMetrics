@@ -20,6 +20,7 @@ export default function ComparePage() {
     videosByChannel,
     isLoading,
     errors,
+    validationErrors,
     addChannel,
     removeChannel,
     updateChannel,
@@ -58,29 +59,45 @@ export default function ComparePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {channelUrls.map((url, index) => (
-              <div key={index} className="group relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center rounded-xl bg-surface-container text-[10px] font-black text-on-surface-variant/40 group-focus-within:bg-primary/10 group-focus-within:text-primary transition-all">
-                  {index + 1}
+            {channelUrls.map((url, index) => {
+              const error = validationErrors[index];
+              return (
+                <div key={index} className="group relative">
+                  <div className={`absolute left-4 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center rounded-xl bg-surface-container text-[10px] font-black transition-all ${
+                    error 
+                      ? "text-error/60 bg-error/10" 
+                      : "text-on-surface-variant/40 group-focus-within:bg-primary/10 group-focus-within:text-primary"
+                  }`}>
+                    {index + 1}
+                  </div>
+                  <input
+                    type="text"
+                    value={url}
+                    onChange={(e) => updateChannel(index, e.target.value)}
+                    placeholder="Paste URL or @handle"
+                    className={`w-full h-14 pl-16 pr-12 rounded-2xl bg-surface-container-low text-sm font-medium text-on-surface placeholder:text-on-surface-variant/30 focus:outline-none focus:ring-2 transition-all shadow-inner ${
+                      error
+                        ? "focus:ring-error/40 ring-1 ring-error/30"
+                        : "focus:ring-primary/40 focus:bg-surface-bright"
+                    }`}
+                  />
+                  {channelUrls.length > 1 && (
+                    <button
+                      onClick={() => removeChannel(index)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center rounded-lg text-on-surface-variant/30 hover:text-tertiary hover:bg-tertiary/10 transition-all"
+                      aria-label="Remove channel"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  )}
+                  {error && (
+                    <p className="absolute -bottom-5 left-0 text-[10px] text-error font-medium truncate max-w-full">
+                      {error}
+                    </p>
+                  )}
                 </div>
-                <input
-                  type="text"
-                  value={url}
-                  onChange={(e) => updateChannel(index, e.target.value)}
-                  placeholder="Paste URL or @handle"
-                  className="w-full h-14 pl-16 pr-12 rounded-2xl bg-surface-container-low text-sm font-medium text-on-surface placeholder:text-on-surface-variant/30 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:bg-surface-bright transition-all shadow-inner"
-                />
-                {channelUrls.length > 1 && (
-                  <button
-                    onClick={() => removeChannel(index)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center rounded-lg text-on-surface-variant/30 hover:text-tertiary hover:bg-tertiary/10 transition-all"
-                    aria-label="Remove channel"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-            ))}
+              );
+            })}
 
             {channelUrls.length < maxChannels && (
               <button
@@ -102,7 +119,7 @@ export default function ComparePage() {
                 <Loader2 className="h-6 w-6 animate-spin text-primary" />
               </div>
               <span className="text-xs font-bold text-on-surface-variant/40 uppercase tracking-widest font-headline">
-                Synthesizing Parity Data...
+                Synthesizing Channel Data...
               </span>
             </div>
           )}
@@ -142,7 +159,7 @@ export default function ComparePage() {
                   <GitCompareArrows className="h-10 w-10 text-primary/40" />
                 </div>
                 <h2 className="font-headline text-2xl font-bold text-on-surface tracking-tight">
-                   Parity scan inactive
+                   Channel scan inactive
                 </h2>
                 <p className="max-w-md mx-auto text-on-surface-variant font-medium leading-relaxed">
                   Bridge multiple data sources to visualize growth trajectories 

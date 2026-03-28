@@ -55,7 +55,7 @@ export function validateChannelInput(input: string): {
   const trimmed = input.trim();
 
   if (!trimmed) {
-    return { valid: false, error: "Please enter a channel URL or handle" };
+    return { valid: false, error: "Enter a YouTube channel URL, @handle, or channel ID" };
   }
 
   const youtubeUrlPattern =
@@ -73,7 +73,7 @@ export function validateChannelInput(input: string): {
 
   return {
     valid: false,
-    error: "Invalid format. Use a YouTube URL, @handle, or channel ID",
+    error: "Invalid format. Use: youtube.com/@handle, youtube.com/channel/ID, or @handle",
   };
 }
 

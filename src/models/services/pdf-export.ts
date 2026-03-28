@@ -44,14 +44,29 @@ export async function exportPDF(data: ReportData): Promise<void> {
   let y = margin;
   let pageNumber = 1;
 
+  let iconImageData: string | null = null;
+  try {
+    const response = await fetch("/icon.png");
+    if (response.ok) {
+      const buffer = await response.arrayBuffer();
+      iconImageData = Buffer.from(buffer).toString("base64");
+    }
+  } catch {
+    iconImageData = null;
+  }
+
   const addHeader = () => {
-    pdf.setFillColor(79, 70, 229);
-    pdf.rect(margin, 8, 4, 8, "F");
+    if (iconImageData) {
+      pdf.addImage(iconImageData, "PNG", margin, 6, 12, 12);
+    } else {
+      pdf.setFillColor(79, 70, 229);
+      pdf.rect(margin, 8, 4, 8, "F");
+    }
     
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(14);
     pdf.setTextColor(17, 24, 39);
-    pdf.text("VidMetrics Report", margin + 8, 14);
+    pdf.text("VidMetrics Report", margin + 16, 14);
     
     pdf.setFont("helvetica", "normal");
     pdf.setFontSize(9);

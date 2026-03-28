@@ -41,36 +41,41 @@ export function CompareViewsOverTime({ channels, videosByChannel }: CompareViews
     );
   }
 
-  const allDates = new Set<string>();
+  const allMonths = new Set<string>();
   const channelDataMap = new Map<string, Map<string, number>>();
 
   validChannels.forEach((channel) => {
     const videos = videosByChannel.get(channel.id) || [];
-    const dateViews = new Map<string, number>();
+    const monthViews = new Map<string, number>();
     
     videos.forEach((video) => {
-      const date = new Date(video.publishedAt).toLocaleDateString("en-US", {
+      const date = new Date(video.publishedAt);
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+      const monthLabel = date.toLocaleDateString("en-US", {
         month: "short",
-        day: "numeric",
+        year: "2-digit",
       });
-      dateViews.set(date, (dateViews.get(date) || 0) + video.viewCount);
-      allDates.add(date);
+      const currentViews = monthViews.get(monthLabel) || 0;
+      monthViews.set(monthLabel, currentViews + video.viewCount);
+      allMonths.add(monthKey + "|" + monthLabel);
     });
     
-    channelDataMap.set(channel.id, dateViews);
+    channelDataMap.set(channel.id, monthViews);
   });
 
-  const sortedDates = Array.from(allDates).sort((a, b) => {
-    const dateA = new Date(a);
-    const dateB = new Date(b);
-    return dateA.getTime() - dateB.getTime();
-  });
+  const sortedMonths = Array.from(allMonths)
+    .sort((a, b) => {
+      const [dateA] = a.split("|");
+      const [dateB] = b.split("|");
+      return dateA.localeCompare(dateB);
+    })
+    .map((m) => m.split("|")[1]);
 
-  const chartData: CompareViewsData[] = sortedDates.map((date) => {
-    const entry: CompareViewsData = { date };
+  const chartData: CompareViewsData[] = sortedMonths.map((month) => {
+    const entry: CompareViewsData = { date: month };
     validChannels.forEach((channel) => {
       const channelViews = channelDataMap.get(channel.id);
-      entry[channel.id] = channelViews?.get(date) || 0;
+      entry[channel.id] = channelViews?.get(month) || 0;
     });
     return entry;
   });
@@ -78,7 +83,7 @@ export function CompareViewsOverTime({ channels, videosByChannel }: CompareViews
   return (
     <div className="bg-surface-container-low/30 rounded-lg p-6 ring-1 ring-white/5">
       <h3 className="font-heading text-lg font-semibold mb-4 text-on-surface">
-        Views Comparison
+        Views Comparison (Last 6 Months)
       </h3>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">

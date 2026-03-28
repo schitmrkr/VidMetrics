@@ -37,10 +37,10 @@ export default function ComparePage() {
               <Zap className="h-3 w-3" /> Kinetic Compare Engine
             </div>
             <h1 className="font-headline text-3xl lg:text-5xl font-black tracking-tighter text-on-surface">
-               Signal <span className="text-primary/80">Parity</span>
+               Channel <span className="text-primary/80">Parity</span>
             </h1>
             <p className="max-w-xl text-base font-medium text-on-surface-variant leading-relaxed">
-              Side-by-side performance synthesis of multiple growth nodes. 
+              Side-by-side performance synthesis of multiple growth channels. 
               Benchmarking <span className="text-on-surface font-bold">Kinetic Reach</span> across your ecosystem.
             </p>
           </div>

@@ -1,12 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Users, Video, Eye, Calendar, ExternalLink } from "lucide-react";
+import { Users, Video, Eye, Calendar, ExternalLink, FileDown, Loader2 } from "lucide-react";
 import type { Channel } from "@/models/types/channel";
 import { MetricCard } from "../dashboard/MetricCard";
 
 interface ChannelOverviewProps {
   channel: Channel;
   averageEngagement?: number;
+  onExportPDF?: () => void;
+  isExporting?: boolean;
 }
 
 function formatNumber(num: number): string {
@@ -19,6 +21,8 @@ function formatNumber(num: number): string {
 export function ChannelOverview({
   channel,
   averageEngagement,
+  onExportPDF,
+  isExporting,
 }: ChannelOverviewProps) {
   const stats = [
     {
@@ -86,6 +90,20 @@ export function ChannelOverview({
 
         {/* Action / Tertiary Space (Asymmetrical) */}
         <div className="flex gap-3">
+          {onExportPDF && (
+            <button
+              onClick={onExportPDF}
+              disabled={isExporting}
+              className="flex items-center justify-center w-10 h-10 rounded-xl bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Export Report"
+            >
+              {isExporting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <FileDown className="h-4 w-4" />
+              )}
+            </button>
+          )}
           <Link
             href={`https://www.youtube.com/channel/${channel.id}`}
             target="_blank"

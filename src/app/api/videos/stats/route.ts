@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const YOUTUBE_API_BASE = "https://www.googleapis.com/youtube/v3";
 const API_KEY = process.env.YOUTUBE_API_KEY;
+const BATCH_SIZE = 50;
 
 export async function GET(request: NextRequest) {
   try {
@@ -22,24 +23,36 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const videoIds = ids.split(",").slice(0, 50); // Max 50 at a time
+    const allVideoIds = ids.split(",");
+    const stats: Array<{
+      videoId: string;
+      viewCount: number;
+      likeCount: number;
+      commentCount: number;
+    }> = [];
 
-    const res = await fetch(
-      `${YOUTUBE_API_BASE}/videos?part=statistics&id=${videoIds.join(",")}&key=${API_KEY}`
-    );
-    const data = await res.json();
+    for (let i = 0; i < allVideoIds.length; i += BATCH_SIZE) {
+      const batch = allVideoIds.slice(i, i + BATCH_SIZE);
+      
+      const res = await fetch(
+        `${YOUTUBE_API_BASE}/videos?part=statistics&id=${batch.join(",")}&key=${API_KEY}`
+      );
+      const data = await res.json();
 
-    const stats = (data.items || []).map(
-      (item: Record<string, unknown>) => {
-        const statistics = item.statistics as Record<string, string>;
-        return {
-          videoId: item.id as string,
-          viewCount: parseInt(statistics.viewCount || "0"),
-          likeCount: parseInt(statistics.likeCount || "0"),
-          commentCount: parseInt(statistics.commentCount || "0"),
-        };
-      }
-    );
+      const batchStats = (data.items || []).map(
+        (item: Record<string, unknown>) => {
+          const statistics = item.statistics as Record<string, string>;
+          return {
+            videoId: item.id as string,
+            viewCount: parseInt(statistics.viewCount || "0"),
+            likeCount: parseInt(statistics.likeCount || "0"),
+            commentCount: parseInt(statistics.commentCount || "0"),
+          };
+        }
+      );
+
+      stats.push(...batchStats);
+    }
 
     return NextResponse.json(stats);
   } catch (error) {

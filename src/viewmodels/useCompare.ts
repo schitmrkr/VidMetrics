@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchChannel, fetchVideos, fetchVideoStats } from "@/models/services/youtube";
 import { useCurrentChannelStore } from "@/store/useCurrentChannelStore";
 import { useCompareChannelsStore } from "@/store/useCompareChannelsStore";
@@ -16,6 +16,8 @@ export function useCompare() {
   const { currentChannelUrl } = useCurrentChannelStore();
   const { channelUrls: storedUrls, setChannelUrls, isInitialized, setInitialized } = useCompareChannelsStore();
   const isInitialMount = useRef(true);
+  const queryClient = useQueryClient();
+  const prevValidUrlsRef = useRef<string[]>([]);
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -67,6 +69,17 @@ export function useCompare() {
 
   const validUrls = localUrls.filter((url) => url.trim().length > 0);
 
+  useEffect(() => {
+    const newUrls = validUrls.filter((url) => !prevValidUrlsRef.current.includes(url));
+    if (newUrls.length > 0) {
+      newUrls.forEach((url) => {
+        queryClient.removeQueries({ queryKey: ["channel", url] });
+        queryClient.invalidateQueries({ queryKey: ["channel", url] });
+      });
+    }
+    prevValidUrlsRef.current = validUrls;
+  }, [validUrls, queryClient]);
+
   const channelQueries = useQueries({
     queries: validUrls.map((url) => ({
       queryKey: ["channel", url],
@@ -90,16 +103,21 @@ export function useCompare() {
     })),
   });
 
+  const videoDataArrays = useMemo(
+    () => videoQueries.map((q) => q.data),
+    [videoQueries]
+  );
+
   const allVideoIds = useMemo(() => {
     const ids: string[] = [];
     validChannels.forEach((channel, index) => {
-      const videoData = videoQueries[index]?.data;
+      const videoData = videoDataArrays[index];
       if (videoData?.videos) {
         ids.push(...videoData.videos.map((v) => v.id));
       }
     });
     return ids;
-  }, [validChannels, videoQueries]);
+  }, [validChannels, videoDataArrays]);
 
   const statsQuery = useQuery<VideoStats[]>({
     queryKey: ["videoStats", ...allVideoIds],
@@ -112,14 +130,15 @@ export function useCompare() {
   const videosByChannel = useMemo(() => {
     const map = new Map<string, { publishedAt: string; viewCount: number }[]>();
     
-    if (!statsQuery.data) return map;
-    
-    const statsMap = new Map(statsQuery.data.map((s) => [s.videoId, s]));
+    const statsMap = new Map(statsQuery.data?.map((s) => [s.videoId, s]) || []);
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
     
     validChannels.forEach((channel, index) => {
-      const videoData = videoQueries[index]?.data;
+      const videoData = videoDataArrays[index];
       if (videoData?.videos) {
-        const channelVideos = videoData.videos.map((v) => {
+        const filteredVideos = videoData.videos.filter((v) => new Date(v.publishedAt) >= sixMonthsAgo);
+        const channelVideos = filteredVideos.map((v) => {
           const stats = statsMap.get(v.id);
           return {
             publishedAt: v.publishedAt,
@@ -131,7 +150,7 @@ export function useCompare() {
     });
     
     return map;
-  }, [validChannels, videoQueries, statsQuery.data]);
+  }, [validChannels, videoDataArrays, statsQuery.data]);
 
   const isLoading = channelQueries.some((q) => q.isLoading) || 
                     videoQueries.some((q) => q.isLoading) || 

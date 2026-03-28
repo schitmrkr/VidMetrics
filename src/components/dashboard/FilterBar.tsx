@@ -54,20 +54,12 @@ export function FilterBar({
             </h3>
             {videoCount !== undefined && (
               <p className="text-[10px] text-on-surface-variant font-medium">
-                {videoCount} ANALYTICS NODES
+                {videoCount} ANALYTICS VIDEOS
               </p>
             )}
           </div>
         </div>
-        {onExport && (
-          <button
-            onClick={onExport}
-            className="flex items-center gap-2 text-xs font-bold text-on-surface-variant hover:text-primary transition-colors px-3 py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright"
-          >
-            <Download className="h-3.5 w-3.5" />
-            EXPORT DATA
-          </button>
-        )}
+        
       </div>
 
       <div className="space-y-6">

@@ -1,21 +1,24 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useMemo } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useChannelAnalysis } from "@/viewmodels/useChannelAnalysis";
 import { useVideoList } from "@/viewmodels/useVideoList";
+import { useTrends } from "@/viewmodels/useTrends";
 import { ChannelInput } from "@/components/channel/ChannelInput";
 import { ChannelOverview } from "@/components/channel/ChannelOverview";
 import { TopPerformers } from "@/components/dashboard/TopPerformers";
 import { VideoGrid } from "@/components/dashboard/VideoGrid";
 import { FilterBar } from "@/components/dashboard/FilterBar";
 import { downloadCSV } from "@/models/services/csv-export";
+import { exportPDF } from "@/models/services/pdf-export";
 import { db } from "@/models/services/db";
-import { BarChart3, Database } from "lucide-react";
+import { BarChart3, Database, FileDown, Loader2 } from "lucide-react";
 
 function DashboardContent() {
   const searchParams = useSearchParams();
   const initialChannel = searchParams.get("channel");
+  const [isExporting, setIsExporting] = useState(false);
 
   const {
     channelUrl,
@@ -35,6 +38,29 @@ function DashboardContent() {
     updateDateRange,
     updateSearch,
   } = useVideoList(channel?.id);
+
+  const { trendMetrics, engagementBreakdown } = useTrends(allVideos);
+
+  const handleExportPDF = async () => {
+    if (!channel || allVideos.length === 0) return;
+    
+    setIsExporting(true);
+    try {
+      await exportPDF({
+        channel,
+        videos: allVideos,
+        averageEngagement: averageEngagement || 0,
+        topPerformers: topViewedVideos,
+        trendMetrics,
+        engagementBreakdown,
+        dateRange: filters.dateRange,
+      });
+    } catch (error) {
+      console.error("Failed to export PDF:", error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   useEffect(() => {
     if (channel && allVideos.length > 0 && !videosLoading) {
@@ -82,7 +108,7 @@ function DashboardContent() {
               Powered by the <span className="text-on-surface font-bold">Kinetic Engine</span>.
             </p>
           </div>
-          
+           
           <div className="w-full md:w-[500px]">
             <ChannelInput
               value={channelUrl}
@@ -102,13 +128,15 @@ function DashboardContent() {
               <ChannelOverview
                 channel={channel}
                 averageEngagement={averageEngagement}
+                onExportPDF={handleExportPDF}
+                isExporting={isExporting}
               />
             </section>
 
             <TopPerformers videos={topViewedVideos} />
 
-            <section className="flex flex-col lg:flex-row gap-12 items-start">
-              <aside className="w-full lg:w-80 shrink-0 sticky top-20 z-20">
+            <section className="flex flex-col xl:flex-row gap-8">
+              <aside className="w-full xl:w-80 shrink-0">
                 <FilterBar
                   sortBy={filters.sortBy}
                   dateRange={filters.dateRange}
@@ -121,7 +149,7 @@ function DashboardContent() {
                 />
               </aside>
 
-              <div className="flex-1 w-full group">
+              <div className="flex-1 w-full min-w-0">
                 <VideoGrid videos={videos} isLoading={videosLoading} />
               </div>
             </section>

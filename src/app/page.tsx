@@ -2,6 +2,7 @@
 
 import { ChannelInput } from "@/components/channel/ChannelInput";
 import { MiniChart } from "@/components/ui/MiniChart";
+import { MiniBarChart, MiniLineChart } from "@/components/ui/MiniCharts";
 import { useChannelAnalysis } from "@/viewmodels/useChannelAnalysis";
 import { useHistory } from "@/viewmodels/useHistory";
 import { useRouter } from "next/navigation";
@@ -131,10 +132,14 @@ export default function LandingPage() {
             <h3 className="text-xl font-headline font-bold text-on-surface mb-3">
               Trend Tracking
             </h3>
-            <p className="text-on-surface-variant font-body leading-relaxed">
+            <p className="text-on-surface-variant font-body leading-relaxed flex-grow">
               Identify viral outliers before they peak. Our Kinetic Lens maps
               momentum shifts in real-time across niches.
             </p>
+            <div className="relative h-56 mt-12 rounded-xl overflow-hidden ring-1 ring-outline-variant/20 shadow-inner bg-surface-container flex items-end justify-center p-6 mb-3">
+              <MiniBarChart color="#85adff" className="w-full h-full" />
+              <div className="absolute inset-0 kinetic-lens-gradient opacity-5 pointer-events-none" />
+            </div>
           </div>
 
           <div className="md:col-span-4 bg-surface-container-low rounded-2xl p-8 border border-outline-variant/10 hover:bg-surface-container-high transition-colors flex flex-col items-start">
@@ -146,13 +151,19 @@ export default function LandingPage() {
             <h3 className="text-xl font-headline font-bold text-on-surface mb-3">
               Easy Export
             </h3>
-            <p className="text-on-surface-variant font-body leading-relaxed">
+            <p className="text-on-surface-variant font-body leading-relaxed flex-grow">
               One-click CSV and PDF reporting for your production team or brand
               sponsors. Professional insights, ready to share.
             </p>
           </div>
 
-          <div className="md:col-span-8 bg-surface-container-high rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8 border border-outline-variant/10">
+          <div className="md:col-span-8 bg-surface-container-high rounded-2xl p-8 flex flex-col-reverse md:flex-row items-center gap-8 border border-outline-variant/10">
+            <div className="w-full md:w-1/3 aspect-square bg-surface-container-highest rounded-2xl flex items-center justify-center relative overflow-hidden ring-1 ring-outline-variant/20">
+              <div className="absolute inset-0 kinetic-lens-gradient opacity-10"></div>
+              <svg className="w-1/2 h-1/2 text-primary animate-pulse" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66.19-.34.05-.08.07-.12C8.48 10.94 10.42 7.54 13 3h1l-1 7h3.5c.49 0 .56.33.47.51l-.07.15C12.96 17.55 11 21 11 21z"/>
+              </svg>
+            </div>
             <div className="flex-grow">
               <span className="text-xs font-label uppercase tracking-widest text-secondary mb-4 block">
                 Built for Speed
@@ -165,12 +176,6 @@ export default function LandingPage() {
                 without the spreadsheet headache. Get the "why" behind the
                 numbers.
               </p>
-            </div>
-            <div className="w-full md:w-1/3 aspect-square bg-surface-container-highest rounded-2xl flex items-center justify-center relative overflow-hidden ring-1 ring-outline-variant/20">
-              <div className="absolute inset-0 kinetic-lens-gradient opacity-10"></div>
-              <span className="material-symbols-outlined text-8xl text-primary animate-pulse">
-                bolt
-              </span>
             </div>
           </div>
         </div>

@@ -93,6 +93,10 @@
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
+.material-symbols-outlined.icon-large {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 160;
+}
+
 /* Custom Utilities from Stitch Design */
 .kinetic-lens-gradient {
   background: linear-gradient(135deg, #85adff 0%, #6e9fff 100%);
